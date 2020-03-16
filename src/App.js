@@ -1,24 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
+import  { getAllGnome } from './services/gnome';
 import './App.css';
 
 function App() {
+  const [gnomeData, setGnomeData] = useState([]);
+  const [nextUrl, setNextUrl] = useState('');
+  const [prevUrl, setPrevUrl] = useState('');
+  const [loading, setLoading] = useState(true);
+  const initialUrl = 'https://raw.githubusercontent.com/rrafols/mobile_test/master/data.json'
+
+  useEffect(() => {
+    async function fetchData() {
+      let response = await getAllGnome(initialUrl);
+      console.log(response);
+      setNextUrl(response.next);
+      setPrevUrl(response.previous);
+      setLoading(false);
+    }
+    fetchData();
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      { loading ? <h1>Loading...</h1> : (
+        <h1>Data is fetched</h1>
+      )}
     </div>
   );
 }

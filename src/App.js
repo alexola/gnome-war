@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import  { getAllGnome } from './services/gnome';
+import  { getAllGnome, getGnome } from './services/gnome';
+import Card from './components/Card';
 import './App.css';
 
 function App() {
@@ -15,14 +16,30 @@ function App() {
       console.log(response);
       setNextUrl(response.next);
       setPrevUrl(response.previous);
+      let gnome = await loadingGnome[response.results];
+      console.log(gnome);
       setLoading(false);
     }
     fetchData();
-  }, [])
+  }, []);
+
+  const loadingGnome = async (data) => {
+    let _gnomeData = await Promise.all(data.map(async gnome => {
+      let gnomeRecord = await getGnome(gnome.url);
+      return gnomeRecord
+    }))
+
+
+    setGnomeData(_gnomeData);
+  };
   return (
     <div>
       { loading ? <h1>Loading...</h1> : (
-        <h1>Data is fetched</h1>
+        <div className="grid-container">
+          {gnomeData.map((gnome, i) => {
+            return <Card key={i} gnome={gnome} />
+          })}
+        </div>
       )}
     </div>
   );

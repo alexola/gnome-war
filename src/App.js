@@ -16,8 +16,7 @@ function App() {
       console.log(response);
       setNextUrl(response.next);
       setPrevUrl(response.previous);
-      let gnome = await loadingGnome[response.results];
-      console.log(gnome);
+      await loadingGnome(response.results);
       setLoading(false);
     }
     fetchData();
